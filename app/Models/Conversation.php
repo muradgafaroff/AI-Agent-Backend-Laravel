@@ -11,6 +11,7 @@ class Conversation extends Model
         'session_id',
         'question',
         'answer',
+        'summary',
 
     ];
 }
