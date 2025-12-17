@@ -6,12 +6,10 @@ use Illuminate\Support\Facades\Http;
 
 class AIService
 {
-    /**
-     * Əsas AI çağırışı
-     */
+    
     public function ask(array $messages): ?string
     {
-        // Messages Responses API formatına salınır
+        // Messages Responses API formated
         $formatted = [];
 
         foreach ($messages as $msg) {
@@ -36,25 +34,25 @@ class AIService
 
         $json = $response->json();
 
-        // Əsas cavab yolu (ən stabil)
+        // Main answer 
         $contents = data_get($json, 'output.0.content', []);
 
         $text = optional(
             collect($contents)->firstWhere('type', 'output_text')
         )['text'];
 
-        // Fallback (bəzən OpenAI buradan qaytarır)
+        // Fallback 
         $text = $text ?? data_get($json, 'output_text');
 
         return blank($text) ? null : $text;
     }
 
-    /**
-     * Söhbətin xülasəsini çıxarır (long-term memory)
-     */
+   
+     // Long-term memory)
+  
     public function summarize(array $messages): ?string
     {
-        // Mesajları AI üçün oxunaqlı formata salırıq
+        // Message formated for ai 
         $conversationText = collect($messages)
             ->map(function ($m) {
                 return strtoupper($m['role']) . ': ' . $m['content'];
